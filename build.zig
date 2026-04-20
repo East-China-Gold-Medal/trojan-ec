@@ -25,6 +25,8 @@ pub fn build(b: *std.Build) !void {
     exe.entry = .{.symbol_name="fakeEntry"};
     exe.is_linking_libc = false;
     exe.lto = .full;
+    // Force the linker to retain vector_table despite LTO
+    exe.forceUndefinedSymbol("vector_table");
     b.installArtifact(exe);
 
     const objcopy = b.addObjCopy(exe.getEmittedBin(), .{
