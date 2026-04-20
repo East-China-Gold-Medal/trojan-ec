@@ -15,6 +15,10 @@ extern var data_addr_in_flash: usize;
 extern var bss_begin: usize;
 extern var bss_end: usize;
 
+comptime {
+    @export(&start, .{ .name = "_start", .linkage = .strong });
+}
+
 pub fn start() callconv(.c) void {
     const data_len = @intFromPtr(&data_end) - @intFromPtr(&data_begin);
     const src = @as([*]u8, @ptrCast(&data_addr_in_flash));
@@ -28,9 +32,4 @@ pub fn start() callconv(.c) void {
     // Add logic here.
 
     while (true) {}
-}
-
-// Fake entry point. Just to make linker happy.
-export fn fakeEntry() callconv(.c) void {
-    start();
 }
