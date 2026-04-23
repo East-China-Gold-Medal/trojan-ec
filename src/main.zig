@@ -8,6 +8,8 @@
 
 const std = @import("std");
 const isr = @import("isr.zig");
+const gpio = @import("gpio.zig");
+const reset_clock = @import("reset_clock.zig");
 
 extern var data_begin: usize;
 extern var data_end: usize;
@@ -30,6 +32,10 @@ pub fn start() callconv(.c) void {
     @memset(bss[0..bss_len], 0);
 
     // Add logic here.
+    reset_clock.enable(reset_clock.GPIOF, true);
+    gpio.configure(gpio.Bank.F, 4, gpio.Mode.Output, gpio.Type.PushPull,
+            gpio.Speed.Low, gpio.Pull.NoPull, gpio.AlternateFunction.AF0);
+    gpio.set(gpio.Bank.F, 4, false);
 
     while (true) {}
 }
