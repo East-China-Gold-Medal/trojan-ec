@@ -59,7 +59,7 @@ pub const Bank = enum(u3) {
 };
 
 pub fn set(bank: Bank, pin: u4, val: bool) void {
-    const gpio_base: u32 = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
+    const gpio_base: usize = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
     var reg = @as(* volatile u32, @ptrFromInt(gpio_base + 0x18)).*;
     const pin_off = @as(u5, pin) | ((@as(u5, @intFromBool(val)) << 4));
     reg |= @as(u32,1) << pin_off;
@@ -67,17 +67,17 @@ pub fn set(bank: Bank, pin: u4, val: bool) void {
 }
 
 pub fn read(bank: Bank, pin: u4) bool {
-    const gpio_base: u32 = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
+    const gpio_base: usize = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
     return (@as(* volatile u32, @ptrFromInt(gpio_base + 0x10)).* & (1 << pin)) != 0;
 }
 
 pub fn reset(bank: Bank, pin: u4) void {
-    const gpio_base: u32 = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
+    const gpio_base: usize = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
     @as(* volatile u32, @ptrFromInt(gpio_base + 0x18)).* = 1 << (pin + 16);
 }
 
 pub fn configure(bank: Bank, pin: u4, mode: Mode, type_: Type, speed: Speed, pull: Pull, alternate: AlternateFunction) void {
-    const gpio_base: u32 = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
+    const gpio_base: usize = GPIO_BASE + (@as(usize, @intFromEnum(bank)) << GPIO_SHIFT);
     var val: u32 = 0;
     const pin_val: u4 = @as(u4, pin);
     // moder.
